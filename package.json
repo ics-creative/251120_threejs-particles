@@ -1,0 +1,30 @@
+{
+  "name": "2511dd_threejs-particles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ics-creative/2511dd_threejs-particles.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ics-creative/2511dd_threejs-particles/issues"
+  },
+  "homepage": "https://github.com/ics-creative/2511dd_threejs-particles#readme",
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
+  },
+  "dependencies": {
+    "three": "^0.181.0"
+  }
+}
