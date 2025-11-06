@@ -1,16 +1,20 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { SimplexNoise } from 'three/addons/math/SimplexNoise.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 
-const canvas = document.querySelector("#canvas");
-const renderer = new THREE.WebGLRenderer({ canvas });
+const app = document.getElementById("app");
+if (!app) {
+    throw new Error("#app element not found");
+}
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(devicePixelRatio);
+app.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000);
