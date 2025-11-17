@@ -80,13 +80,13 @@ function curlNoise(x: number, y: number, z: number, out: THREE.Vector3) {
 
 // パーティクルの初期化
 const count = 2400;
-const spreadRange = 24;
+const range = 24;
 const positions = new Float32Array(count * 3);
 
 for (let i = 0; i < count; i++) {
-  positions[i * 3] = THREE.MathUtils.randFloatSpread(spreadRange);
-  positions[i * 3 + 1] = THREE.MathUtils.randFloatSpread(spreadRange);
-  positions[i * 3 + 2] = THREE.MathUtils.randFloatSpread(spreadRange);
+  positions[i * 3] = THREE.MathUtils.randFloatSpread(range);
+  positions[i * 3 + 1] = THREE.MathUtils.randFloatSpread(range);
+  positions[i * 3 + 2] = THREE.MathUtils.randFloatSpread(range);
 }
 
 // ジオメトリの作成
@@ -136,14 +136,16 @@ scene.add(points);
 // ポストプロセス処理
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
+// UnrealBloomPass (光のぼかし）
 const bloom = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  1.8, // strength
-  0.8, // radius
-  0.0, // threshold
+  1.8,
+  0.8,
+  0.0,
 );
 composer.addPass(bloom);
 
+// AfterimagePass (光の残像)
 const afterimage = new AfterimagePass();
 afterimage.uniforms["damp"].value = 0.86;
 composer.addPass(afterimage);
@@ -159,7 +161,6 @@ function animate() {
 
   for (let i = 0; i < count; i++) {
     const ix = i * 3;
-
     // Curl Noiseのベクトル場flowをパーティクルの位置に加算
     p.set(pos[ix], pos[ix + 1], pos[ix + 2]);
     curlNoise(p.x * noiseScale, p.y * noiseScale, p.z * noiseScale, flow);
@@ -168,11 +169,11 @@ function animate() {
     pos[ix + 1] += flow.y;
     pos[ix + 2] += flow.z;
 
-    // パーティクルがspreadRangeよりも離れたら位置をリセット
-    if (p.length() > 2 * spreadRange) {
-      pos[ix] = THREE.MathUtils.randFloatSpread(spreadRange);
-      pos[ix + 1] = THREE.MathUtils.randFloatSpread(spreadRange);
-      pos[ix + 2] = THREE.MathUtils.randFloatSpread(spreadRange);
+    // パーティクルがrangeよりも離れたら位置をリセット
+    if (p.length() > 2 * range) {
+      pos[ix] = THREE.MathUtils.randFloatSpread(range);
+      pos[ix + 1] = THREE.MathUtils.randFloatSpread(range);
+      pos[ix + 2] = THREE.MathUtils.randFloatSpread(range);
     }
   }
 
