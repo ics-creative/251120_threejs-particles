@@ -151,6 +151,8 @@ composer.addPass(afterimage);
 composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 composer.setSize(window.innerWidth, window.innerHeight);
 
+const noiseScale = 0.1;
+const flowStrength = 0.003;
 // パーティクルをアニメーションさせる
 function animate() {
   const pos = geometry.attributes.position.array;
@@ -160,8 +162,8 @@ function animate() {
 
     // Curl Noiseのベクトル場flowをパーティクルの位置に加算
     p.set(pos[ix], pos[ix + 1], pos[ix + 2]);
-    curlNoise(p.x * 0.1, p.y * 0.1, p.z * 0.1, flow);
-    flow.multiplyScalar(0.003);
+    curlNoise(p.x * noiseScale, p.y * noiseScale, p.z * noiseScale, flow);
+    flow.multiplyScalar(flowStrength);
     pos[ix] += flow.x;
     pos[ix + 1] += flow.y;
     pos[ix + 2] += flow.z;
