@@ -48,7 +48,8 @@ const Fy2 = new THREE.Vector3();
 const Fz1 = new THREE.Vector3();
 const Fz2 = new THREE.Vector3();
 
-function sampleF(x: number, y: number, z: number, out: THREE.Vector3) {
+// 三次元のベクトル場を作成
+function sampleVectorField(x: number, y: number, z: number, out: THREE.Vector3) {
   out.set(
     noise.noise3d(y, z, x),
     noise.noise3d(z, x, y),
@@ -57,15 +58,18 @@ function sampleF(x: number, y: number, z: number, out: THREE.Vector3) {
   return out;
 }
 
+// 三次元ベクトル場の回転成分を近似で求める
 function curlNoise(x: number, y: number, z: number, out: THREE.Vector3) {
   const e = 1e-4;
-  sampleF(x + e, y, z, Fx1);
-  sampleF(x - e, y, z, Fx2);
-  sampleF(x, y + e, z, Fy1);
-  sampleF(x, y - e, z, Fy2);
-  sampleF(x, y, z + e, Fz1);
-  sampleF(x, y, z - e, Fz2);
+  // パーティクル付近の6点をサンプリング
+  sampleVectorField(x + e, y, z, Fx1);
+  sampleVectorField(x - e, y, z, Fx2);
+  sampleVectorField(x, y + e, z, Fy1);
+  sampleVectorField(x, y - e, z, Fy2);
+  sampleVectorField(x, y, z + e, Fz1);
+  sampleVectorField(x, y, z - e, Fz2);
 
+  // 回転成分を計算
   out.set(
     (Fy1.z - Fy2.z - (Fz1.y - Fz2.y)) / (2 * e),
     (Fz1.x - Fz2.x - (Fx1.z - Fx2.z)) / (2 * e),
@@ -163,7 +167,7 @@ function animate() {
     pos[ix + 2] += flow.z;
 
     // パーティクルがspreadRangeよりも離れたら位置をリセット
-    if (p.length() > 30) {
+    if (p.length() > 2 * spreadRange) {
       pos[ix] = THREE.MathUtils.randFloatSpread(spreadRange);
       pos[ix + 1] = THREE.MathUtils.randFloatSpread(spreadRange);
       pos[ix + 2] = THREE.MathUtils.randFloatSpread(spreadRange);
