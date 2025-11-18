@@ -49,7 +49,12 @@ const Fz1 = new THREE.Vector3();
 const Fz2 = new THREE.Vector3();
 
 // 三次元のベクトル場を作成
-function sampleVectorField(x: number, y: number, z: number, out: THREE.Vector3) {
+function sampleVectorField(
+  x: number,
+  y: number,
+  z: number,
+  out: THREE.Vector3,
+) {
   out.set(
     noise.noise3d(y, z, x),
     noise.noise3d(z, x, y),
@@ -107,7 +112,10 @@ function makeCircleTexture() {
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Failed to get 2D rendering context");
+  }
   // グラデーションのある円
   const gradient = ctx.createRadialGradient(
     size / 2,
@@ -147,7 +155,7 @@ composer.addPass(bloom);
 
 // AfterimagePass (光の残像)
 const afterimage = new AfterimagePass();
-afterimage.uniforms["damp"].value = 0.86;
+afterimage.uniforms.damp.value = 0.86;
 composer.addPass(afterimage);
 
 composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));

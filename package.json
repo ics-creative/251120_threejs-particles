@@ -6,7 +6,8 @@
     "dev": "vite --open",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "format": "npx biome format . --write"
+    "format": "biome format . --write",
+    "lint": "biome lint --write"
   },
   "repository": {
     "type": "git",
