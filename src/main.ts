@@ -105,8 +105,7 @@ function makeCircleTexture() {
   gradient.addColorStop(1, "rgba(255, 255, 255, 0)"); // 外側の円：透明
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size, size);
-  const tex = new THREE.CanvasTexture(canvas);
-  return tex;
+  return new THREE.CanvasTexture(canvas);
 }
 material.map = makeCircleTexture();
 
