@@ -44,20 +44,20 @@ function sampleVectorField(x: number, y: number, z: number) {
 
 // 三次元ベクトル場の回転成分を近似で求める
 function curlNoise(x: number, y: number, z: number) {
-  const e = 0.0001;
+  const E = 0.0001; //サンプリングのための微小な座標の差分
   // パーティクル付近の6点をサンプリング
-  const fx1 = sampleVectorField(x + e, y, z);
-  const fx2 = sampleVectorField(x - e, y, z);
-  const fy1 = sampleVectorField(x, y + e, z);
-  const fy2 = sampleVectorField(x, y - e, z);
-  const fz1 = sampleVectorField(x, y, z + e);
-  const fz2 = sampleVectorField(x, y, z - e);
+  const fx1 = sampleVectorField(x + E, y, z);
+  const fx2 = sampleVectorField(x - E, y, z);
+  const fy1 = sampleVectorField(x, y + E, z);
+  const fy2 = sampleVectorField(x, y - E, z);
+  const fz1 = sampleVectorField(x, y, z + E);
+  const fz2 = sampleVectorField(x, y, z - E);
 
   // 回転成分を計算
   return new THREE.Vector3(
-    (fy1.z - fy2.z - (fz1.y - fz2.y)) / (2 * e),
-    (fz1.x - fz2.x - (fx1.z - fx2.z)) / (2 * e),
-    (fx1.y - fx2.y - (fy1.x - fy2.x)) / (2 * e),
+    (fy1.z - fy2.z - (fz1.y - fz2.y)) / (2 * E),
+    (fz1.x - fz2.x - (fx1.z - fx2.z)) / (2 * E),
+    (fx1.y - fx2.y - (fy1.x - fy2.x)) / (2 * E),
   );
 }
 
