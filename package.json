@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/main.js",
   "scripts": {
-    "dev": "vite --open",
+    "dev": "vite --open --host",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "biome format . --write",

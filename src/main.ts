@@ -11,10 +11,6 @@ if (!app) {
   throw new Error("#app element not found");
 }
 
-// バッファ用
-const p = new THREE.Vector3();
-const flow = new THREE.Vector3();
-
 // レンダラーの作成
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -39,48 +35,33 @@ controls.enableDamping = true;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.8;
 
-// Curl Noiseの実装
 const noise = new SimplexNoise();
-const Fx1 = new THREE.Vector3();
-const Fx2 = new THREE.Vector3();
-const Fy1 = new THREE.Vector3();
-const Fy2 = new THREE.Vector3();
-const Fz1 = new THREE.Vector3();
-const Fz2 = new THREE.Vector3();
-
 // 三次元のベクトル場を作成
-function sampleVectorField(
-  x: number,
-  y: number,
-  z: number,
-  out: THREE.Vector3,
-) {
-  out.set(
+function sampleVectorField(x: number, y: number, z: number) {
+  return new THREE.Vector3(
     noise.noise3d(y, z, x),
     noise.noise3d(z, x, y),
     noise.noise3d(x, y, z),
   );
-  return out;
 }
 
 // 三次元ベクトル場の回転成分を近似で求める
-function curlNoise(x: number, y: number, z: number, out: THREE.Vector3) {
+function curlNoise(x: number, y: number, z: number) {
   const e = 1e-4;
   // パーティクル付近の6点をサンプリング
-  sampleVectorField(x + e, y, z, Fx1);
-  sampleVectorField(x - e, y, z, Fx2);
-  sampleVectorField(x, y + e, z, Fy1);
-  sampleVectorField(x, y - e, z, Fy2);
-  sampleVectorField(x, y, z + e, Fz1);
-  sampleVectorField(x, y, z - e, Fz2);
+  const Fx1 = sampleVectorField(x + e, y, z);
+  const Fx2 = sampleVectorField(x - e, y, z);
+  const Fy1 = sampleVectorField(x, y + e, z);
+  const Fy2 = sampleVectorField(x, y - e, z);
+  const Fz1 = sampleVectorField(x, y, z + e);
+  const Fz2 = sampleVectorField(x, y, z - e);
 
   // 回転成分を計算
-  out.set(
+  return new THREE.Vector3(
     (Fy1.z - Fy2.z - (Fz1.y - Fz2.y)) / (2 * e),
     (Fz1.x - Fz2.x - (Fx1.z - Fx2.z)) / (2 * e),
     (Fx1.y - Fx2.y - (Fy1.x - Fy2.x)) / (2 * e),
   );
-  return out;
 }
 
 // パーティクルの初期化
@@ -170,8 +151,12 @@ function animate() {
   for (let i = 0; i < count; i++) {
     const ix = i * 3;
     // Curl Noiseのベクトル場flowをパーティクルの位置に加算
-    p.set(pos[ix], pos[ix + 1], pos[ix + 2]);
-    curlNoise(p.x * noiseScale, p.y * noiseScale, p.z * noiseScale, flow);
+    const p = new THREE.Vector3(pos[ix], pos[ix + 1], pos[ix + 2]);
+    const flow = curlNoise(
+      p.x * noiseScale,
+      p.y * noiseScale,
+      p.z * noiseScale,
+    );
     flow.multiplyScalar(flowStrength);
     pos[ix] += flow.x;
     pos[ix + 1] += flow.y;
