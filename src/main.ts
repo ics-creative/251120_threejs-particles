@@ -159,7 +159,7 @@ function animate() {
     }
   }
 
-  geometry.attributes.position.needsUpdate = true;
+  pos.needsUpdate = true;
   controls.update();
   composer.render();
   requestAnimationFrame(animate);
